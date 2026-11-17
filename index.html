@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Марта Левицька · 8 тижнів вдома (демо)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alumni+Sans:wght@600;800;900&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a training log — weeks as a grid, numbers as stopwatch readouts, one orange signal colour */
+:root{
+  --chalk:#EDEFEC;      /* page background, gym chalk */
+  --iron:#151C19;       /* main ink, cast iron */
+  --mat:#DDE2DD;        /* panels, rubber mat */
+  --line:#B9C2BC;       /* hairlines */
+  --signal:#E04E26;     /* stopwatch orange, the one accent */
+  --pine:#2D6A58;       /* secondary, used sparingly */
+  --font-display:"Alumni Sans","Arial Narrow",Impact,sans-serif;
+  --font-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--chalk);color:var(--iron);font-family:var(--font-body);font-size:17px;line-height:1.55}
+a{color:inherit}
+h1,h2,h3{font-family:var(--font-display);font-weight:900;line-height:.9;letter-spacing:.005em;text-wrap:balance;margin:0;text-transform:uppercase}
+h2{font-size:clamp(44px,7vw,76px)}
+h3{font-size:30px;font-weight:800}
+p{margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+:focus-visible{outline:3px solid var(--signal);outline-offset:3px}
+
+/* demo ribbon */
+.ribbon{background:var(--iron);color:var(--chalk);font-size:14px}
+.ribbon .wrap{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;justify-content:space-between;padding-top:10px;padding-bottom:10px}
+.ribbon b{color:var(--signal);font-weight:600}
+.ribbon a{color:var(--chalk);font-weight:600;text-decoration-color:var(--signal);text-underline-offset:3px}
+
+/* header */
+header .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:22px;padding-bottom:22px;gap:16px}
+.brand{font-family:var(--font-display);font-weight:900;font-size:30px;text-transform:uppercase;letter-spacing:.02em}
+.brand span{color:var(--signal)}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--signal);color:#fff;border:0;border-radius:4px;padding:14px 22px;font:600 16px var(--font-body);text-decoration:none;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.btn:hover{transform:translateY(-2px);background:#C9411C}
+.btn.ghost{background:transparent;color:var(--iron);box-shadow:inset 0 0 0 2px var(--iron)}
+.btn.ghost:hover{background:var(--iron);color:var(--chalk)}
+
+/* hero */
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;padding-top:24px;padding-bottom:72px;align-items:end}
+.kicker{font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--pine);margin-bottom:18px}
+.hero h1{font-size:clamp(72px,12vw,148px)}
+.hero h1 em{font-style:normal;color:var(--signal)}
+.hero .lead{max-width:34ch;font-size:19px;margin:26px 0 30px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px}
+.watch{background:var(--iron);color:var(--chalk);border-radius:6px;padding:26px 26px 22px}
+.watch .label{font-size:13px;text-transform:uppercase;letter-spacing:.12em;opacity:.7}
+.watch .time{font-family:var(--font-display);font-weight:800;font-size:120px;line-height:.85;font-variant-numeric:tabular-nums;margin:6px 0 4px}
+.watch .time small{font-size:40px;color:var(--signal)}
+.weeks{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;align-items:end;height:110px;margin-top:18px}
+.weeks div{background:#3A453F;border-radius:2px;position:relative}
+.weeks div i{position:absolute;inset:auto 0 0 0;background:var(--signal);border-radius:2px;height:100%;transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.7,.2,1) both}
+.weeks-cap{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;font-size:12px;opacity:.7;margin-top:6px;text-align:center;font-variant-numeric:tabular-nums}
+@keyframes grow{from{transform:scaleY(.25)}to{transform:scaleY(1)}}
+
+/* sections */
+section{padding:72px 0;border-top:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:220px 1fr;gap:24px;margin-bottom:40px;align-items:start}
+.sec-num{font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--signal);text-transform:uppercase;letter-spacing:.06em;padding-top:10px}
+.for{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.for article{border-top:4px solid var(--iron);padding-top:16px}
+.for p{margin-top:10px;color:#3B4641}
+
+/* program table */
+.plan{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.plan th,.plan td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.plan th{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:#5A665F;font-weight:600}
+.plan td:first-child{font-family:var(--font-display);font-weight:800;font-size:30px;width:90px;color:var(--signal)}
+.plan td:nth-child(2){font-weight:600}
+.plan td:last-child{color:#3B4641}
+.table-scroll{overflow-x:auto}
+
+/* pricing */
+.prices{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.price{background:var(--mat);border-radius:6px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.price.main{background:var(--iron);color:var(--chalk)}
+.price .sum{font-family:var(--font-display);font-weight:900;font-size:72px;line-height:.9;font-variant-numeric:tabular-nums}
+.price .sum small{font-size:28px}
+.price ul{margin:0;padding-left:20px}
+.price .btn{align-self:flex-start;margin-top:auto}
+.note{font-size:14px;color:#5A665F;margin-top:14px}
+
+/* reviews placeholder */
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.slot{border:2px dashed var(--line);border-radius:6px;padding:24px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;color:#5A665F}
+.slot b{color:var(--iron)}
+
+/* faq */
+details{border-bottom:1px solid var(--line);padding:18px 0}
+summary{cursor:pointer;font-weight:600;font-size:19px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::after{content:"+";font-family:var(--font-display);font-size:30px;line-height:.8;color:var(--signal)}
+details[open] summary::after{content:"–"}
+details p{margin-top:10px;max-width:65ch;color:#3B4641}
+
+/* form + telegram preview */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+form{display:grid;gap:14px}
+label{font-size:14px;font-weight:600;display:grid;gap:6px}
+input,select,textarea{font:16px var(--font-body);padding:12px 14px;border:2px solid var(--iron);border-radius:4px;background:#fff;color:var(--iron);width:100%}
+textarea{min-height:90px;resize:vertical}
+.err{color:#B3261E;font-size:14px;min-height:1em}
+.phone{background:#1E2A33;border-radius:22px;padding:18px;color:#E8EEF2;max-width:400px;justify-self:center;width:100%}
+.phone .bar{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid #2E3D48;margin-bottom:14px}
+.phone .ava{width:38px;height:38px;border-radius:50%;background:var(--signal);display:grid;place-items:center;font-weight:700;color:#fff}
+.phone .who{font-weight:600}
+.phone .who small{display:block;font-weight:400;opacity:.65;font-size:13px}
+.bubble{background:#2B5278;border-radius:14px 14px 14px 4px;padding:12px 14px;font-size:15px;line-height:1.45;white-space:pre-wrap}
+.bubble .t{display:block;text-align:right;font-size:12px;opacity:.6;margin-top:6px}
+.phone .hint{font-size:13px;opacity:.7;margin-top:12px}
+.flash{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.96);opacity:.4}100%{transform:none;opacity:1}}
+
+footer{background:var(--iron);color:var(--chalk);padding:40px 0;font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}
+footer a{color:var(--chalk);text-decoration-color:var(--signal);text-underline-offset:3px}
+
+@media (max-width:820px){
+  .hero .wrap,.form-grid,.sec-head{grid-template-columns:1fr}
+  .for,.slots,.prices{grid-template-columns:1fr}
+  .watch .time{font-size:96px}
+  section{padding:56px 0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon">
+  <div class="wrap">
+    <span><b>Демо-сайт.</b> Тренерка, програма й ціни вигадані — це приклад роботи.</span>
+    <span>Хочете такий сайт для себе? <a href="https://t.me/brainfisher13">Telegram @brainfisher13</a></span>
+  </div>
+</div>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Марта<span>/</span>Левицька</div>
+    <a class="btn ghost" href="#zayavka">Безкоштовна консультація</a>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <div class="wrap">
+    <div>
+      <p class="kicker">Онлайн-програма для жінок · старт щопонеділка</p>
+      <h1>8 тижнів.<br>30 хвилин.<br><em>Вдома.</em></h1>
+      <p class="lead">Тренування без залу та харчування без голодування. Щотижня я перевіряю ваш звіт і коригую план.</p>
+      <div class="ctas">
+        <a class="btn" href="#zayavka">Записатися на консультацію</a>
+        <a class="btn ghost" href="#programa">Подивитися програму</a>
+      </div>
+    </div>
+    <div class="watch" aria-label="Тренування триває 30 хвилин, навантаження зростає протягом 8 тижнів">
+      <div class="label">Одне тренування</div>
+      <div class="time">30<small>:00</small></div>
+      <div class="label">Навантаження по тижнях</div>
+      <div class="weeks" aria-hidden="true">
+        <div style="height:30%"><i style="animation-delay:.05s"></i></div>
+        <div style="height:38%"><i style="animation-delay:.1s"></i></div>
+        <div style="height:47%"><i style="animation-delay:.15s"></i></div>
+        <div style="height:55%"><i style="animation-delay:.2s"></i></div>
+        <div style="height:66%"><i style="animation-delay:.25s"></i></div>
+        <div style="height:74%"><i style="animation-delay:.3s"></i></div>
+        <div style="height:86%"><i style="animation-delay:.35s"></i></div>
+        <div style="height:100%"><i style="animation-delay:.4s"></i></div>
+      </div>
+      <div class="weeks-cap" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">Для кого</span><h2>Якщо зал — не варіант</h2></div>
+    <div class="for">
+      <article><h3>Мало часу</h3><p>Робота, діти, дорога. Тренування займає 30 хвилин, і його можна зробити ввечері у вітальні.</p></article>
+      <article><h3>Без інвентарю</h3><p>Перші 4 тижні потрібен лише килимок. Далі — гумова стрічка або пляшки з водою замість гантелей.</p></article>
+      <article><h3>Без жорстких дієт</h3><p>Звичайні продукти з АТБ чи Сільпо. Ви вчитеся рахувати порції, а не відмовлятися від усього.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="programa">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">Програма</span><h2>Що буде щотижня</h2></div>
+    <div class="table-scroll">
+      <table class="plan">
+        <thead><tr><th>Тиждень</th><th>Фокус</th><th>Що робимо</th></tr></thead>
+        <tbody>
+          <tr><td>01</td><td>Старт і заміри</td><td>Фото, обхвати, вага. Звичний раціон без змін — просто записуємо.</td></tr>
+          <tr><td>02</td><td>Техніка рухів</td><td>Присідання, випади, планка. Розбираю ваші відео.</td></tr>
+          <tr><td>03</td><td>Тарілка</td><td>Правило половини тарілки овочів, білок у кожному прийомі їжі.</td></tr>
+          <tr><td>04</td><td>Перший звіт</td><td>Порівнюємо заміри, коригую навантаження й порції.</td></tr>
+          <tr><td>05</td><td>Стрічка</td><td>Додаємо гумову стрічку, кругові тренування.</td></tr>
+          <tr><td>06</td><td>Вихідні без зривів</td><td>Як їсти в гостях і в кафе, план на суботу й неділю.</td></tr>
+          <tr><td>07</td><td>Інтервали</td><td>Коротші перерви, вищий темп, ті самі 30 хвилин.</td></tr>
+          <tr><td>08</td><td>Підсумок</td><td>Фінальні заміри та план, як тримати результат самостійно.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">Формат</span><h2>Два тарифи</h2></div>
+    <div class="prices">
+      <div class="price">
+        <h3>Самостійно</h3>
+        <div class="sum">1 200<small> грн</small></div>
+        <ul><li>Відеотренування на 8 тижнів</li><li>Гайд з харчування</li><li>Загальний чат учасниць</li></ul>
+        <a class="btn ghost" href="#zayavka">Обрати</a>
+      </div>
+      <div class="price main">
+        <h3>З супроводом</h3>
+        <div class="sum">2 900<small> грн</small></div>
+        <ul><li>Усе з тарифу «Самостійно»</li><li>Щотижнева перевірка звіту</li><li>Розбір техніки за вашими відео</li><li>Відповіді в Telegram у будні</li></ul>
+        <a class="btn" href="#zayavka">Обрати</a>
+      </div>
+    </div>
+    <p class="note">Ціни умовні — це демо. Перед початком тренувань проконсультуйтеся з лікарем.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">Відгуки</span><h2>Місце для реальних історій</h2></div>
+    <div class="slots">
+      <div class="slot"><b>Скрін відгуку з Instagram</b><span>На реальному сайті тут будуть відгуки ваших клієнток. У демо їх навмисно немає — вигадані відгуки ми не пишемо.</span></div>
+      <div class="slot"><b>Фото «до / після»</b><span>Лише з письмової згоди клієнтки.</span></div>
+      <div class="slot"><b>Коротке відео</b><span>30 секунд від учасниці про програму.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">Питання</span><h2>Часто питають</h2></div>
+    <details><summary>Мені 45 і я ніколи не тренувалася. Це для мене?</summary><p>Так. Перші два тижні — техніка й базові рухи. Навантаження зростає поступово, а на консультації ми врахуємо ваш стан.</p></details>
+    <details><summary>Скільки кілограмів я скину?</summary><p>Чесно — не знаю, і ніхто не знає наперед. Результат залежить від стартової точки, сну, харчування й регулярності. Ми відстежуємо заміри щотижня, а не обіцяємо цифру.</p></details>
+    <details><summary>Що, якщо я пропущу тиждень?</summary><p>Доступ до тренувань лишається на 3 місяці, тож тиждень можна перенести.</p></details>
+  </div>
+</section>
+
+<section id="zayavka">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-num">Заявка</span><h2>Безкоштовна консультація 15 хвилин</h2></div>
+    <div class="form-grid">
+      <form id="lead" novalidate>
+        <label for="f-name">Ім'я<input id="f-name" name="name" autocomplete="given-name" placeholder="Наприклад, Оксана"></label>
+        <label for="f-contact">Telegram або телефон<input id="f-contact" name="contact" placeholder="@username або +380…"></label>
+        <label for="f-goal">Мета
+          <select id="f-goal" name="goal">
+            <option>Схуднути</option>
+            <option>Підтягнути тіло</option>
+            <option>Повернутися до тренувань після перерви</option>
+            <option>Ще не знаю, хочу порадитися</option>
+          </select>
+        </label>
+        <label for="f-tariff">Тариф
+          <select id="f-tariff" name="tariff">
+            <option>З супроводом</option>
+            <option>Самостійно</option>
+            <option>Ще не вирішила</option>
+          </select>
+        </label>
+        <label for="f-msg">Коментар (необов'язково)<textarea id="f-msg" name="msg" placeholder="Коли зручно зв'язатися"></textarea></label>
+        <input type="text" name="website" id="f-website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <p class="err" id="err" role="alert"></p>
+        <button class="btn" type="submit" id="send">Надіслати заявку</button>
+        <p class="note">Це демо, але форма справжня: заявка прийде в Telegram розробнику сайту, Євгену Гурському, — так само, як на вашому сайті приходила б вам. Дані використовуються лише для відповіді.</p>
+      </form>
+
+      <div class="phone" aria-live="polite">
+        <div class="bar"><div class="ava">М</div><div class="who">Бот заявок · Марта<small>так заявка виглядає в Telegram тренерки</small></div></div>
+        <div class="bubble" id="bubble">🔔 Нова заявка з сайту
+Ім'я: Оксана
+Контакт: @oksana_k
+Мета: Схуднути
+Тариф: З супроводом
+Коментар: після 19:00<span class="t">приклад</span></div>
+        <p class="hint" id="hint">Заповніть форму ліворуч — і тут з'явиться повідомлення в тому вигляді, в якому воно приходить у Telegram.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Демо-сайт. Розробка — Євген Гурський.</span>
+    <span>Потрібен лендінг із заявками в Telegram? <a href="https://t.me/brainfisher13">Напишіть @brainfisher13</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var ENDPOINT='https://script.google.com/macros/s/AKfycbwK7qLNBvQgoIYkDNb68YlGzBfFzo7d50_8YIcRXxhGdyscohwfq9XudwMccFUBxjtE/exec';
+  var form=document.getElementById('lead');
+  var bubble=document.getElementById('bubble');
+  var hint=document.getElementById('hint');
+  var err=document.getElementById('err');
+  function esc(s){return s.replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var f=function(id){return document.getElementById(id);};
+    var name=f('f-name').value.trim(), contact=f('f-contact').value.trim();
+    if(!name||!contact){err.textContent='Вкажіть ім’я і контакт — без них тренерка не зможе вам відповісти.';(name?f('f-contact'):f('f-name')).focus();return;}
+    err.textContent='';
+    var now=new Date(), hh=String(now.getHours()).padStart(2,'0'), mm=String(now.getMinutes()).padStart(2,'0');
+    var msg=f('f-msg').value.trim();
+    bubble.innerHTML='🔔 Нова заявка з сайту\nІм’я: '+esc(name)+'\nКонтакт: '+esc(contact)+'\nМета: '+esc(f('f-goal').value)+'\nТариф: '+esc(f('f-tariff').value)+(msg?'\nКоментар: '+esc(msg):'')+'<span class="t">'+hh+':'+mm+' ✓✓</span>';
+    bubble.classList.remove('flash');void bubble.offsetWidth;bubble.classList.add('flash');
+    var btn=document.getElementById('send');
+    btn.disabled=true;btn.textContent='Надсилаю…';
+    var data=new URLSearchParams({name:name,contact:contact,goal:f('f-goal').value,tariff:f('f-tariff').value,msg:msg,website:f('f-website').value});
+    fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:data}).then(function(){
+      hint.textContent='Готово: заявка вже в Telegram. Так само вона приходила б на вашому сайті.';
+      btn.textContent='Надіслано ✓';
+    }).catch(function(){
+      hint.textContent='Не вдалося надіслати — перевірте інтернет і спробуйте ще раз.';
+      btn.disabled=false;btn.textContent='Надіслати заявку';
+    });
+  });
+})();
+</script>
+</body>
+</html>
